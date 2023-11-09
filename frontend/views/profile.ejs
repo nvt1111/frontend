@@ -1,0 +1,252 @@
+<%- include('layouts/header.ejs') %>
+
+	<body>
+		<style>
+			.primary-btn.order-submit {
+				width: 420px;
+				padding: 10px;
+				font-size: 16px;
+			}
+
+			.order-table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-top: 20px;
+			}
+
+			.order-table th,
+			.order-table td {
+				border: 1px solid #ddd;
+				padding: 8px;
+				text-align: center;
+			}
+
+			.order-table th {
+				background-color: #f2f2f2;
+			}
+
+			.option-icon {
+				margin: 0 5px;
+				color: #ff0000;
+			}
+
+			.delete-icon {
+				color: #ff0000;
+			}
+
+			.details-icon {
+				color: #0088cc;
+			}
+		</style>
+		<!-- thư viện boot cho 2 icon -->
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+		<!-- HEADER -->
+		<header>
+			<!-- TOP HEADER -->
+			<%- include('layouts/topHeader.ejs')%>
+				<!-- /TOP HEADER -->
+
+				<!-- MAIN HEADER -->
+				<%- include('layouts/mainHeader.ejs')%>
+					<!-- /MAIN HEADER -->
+		</header>
+		<!-- /HEADER -->
+
+		<%- include('layouts/navigation.ejs')%>
+
+			<!-- BREADCRUMB -->
+			<div id="breadcrumb" class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3 class="breadcrumb-header">
+								<%= __("Profile") %>
+							</h3>
+							<ul class="breadcrumb-tree">
+								<li><a href="#">
+										<%= __("Home") %>
+									</a></li>
+								<li class="active">
+									<%= __("Profile") %>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /BREADCRUMB -->
+
+			<!-- SECTION -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+
+						<div class="col-md-3 order-details">
+							<!-- Billing Details -->
+							<div class="billing-details">
+								<div class="section-title">
+									<h3 class="title">
+										<%= __("UserProfile") %>
+									</h3>
+								</div>
+								<form action="/api/v1/users/changepassword/<%=user._id%>?_method=PUT" method="POST">
+									<div class="form-group">
+										<label for="name">
+											<%= __("UserName") %>
+										</label>
+										<input class="input" type="text" name="name" placeholder="
+										<%= __(" Name") %>"
+										value="<%=user.name%>">
+									</div>
+									<div class="form-group">
+										<label for="name">Email</label>
+										<input class="input" type="email" name="email" placeholder="Email"
+											value="<%=user.email%>">
+									</div>
+									<div class="form-group">
+										<label for="name">
+											<%= __("Phone") %>
+										</label>
+										<input class="input" type="text" name="phone" placeholder="
+										<%= __(" Phone") %>"
+										value="<%=user.phone%>">
+									</div>
+									<div class="form-group">
+										<label for="name">
+											<%= __("Oldpassword") %>
+										</label>
+										<input class="input" type="password" name="oldpassword" placeholder="
+										<%= __(" Oldpassword") %>" value="">
+									</div>
+									<div class="form-group">
+										<label for="name">
+											<%= __("Newpassword") %>
+										</label>
+										<input class="input" type="password" name="newpassword" placeholder="
+										<%= __(" Newpassword") %>" value="">
+									</div>
+									<div class="form-group">
+										<label for="name">
+											<%= __("Confirmpassword") %>
+										</label>
+										<input class="input" type="password" name="confirmpassword"
+											placeholder="<%= __(" Confirmpassword") %>">
+									</div>
+									<button class="primary-btn order-submit" style="width: 100%;" type="submit">
+										<%= __("Update") %>
+									</button>
+								</form>
+							</div>
+						</div>
+
+						<!-- Order Details -->
+						<div class="col-md-9 order-details">
+							<div class="section-title text-center">
+								<h3 class="title">
+									<%= __("YourOrder") %>
+								</h3>
+							</div>
+							<table class="order-table">
+
+								<thead>
+									<tr>
+										<th>
+											<%= __("Orderid") %>
+										</th>
+										<th>
+											<%= __("Price") %>
+										</th>
+										<th>
+											<%= __("Address") %>
+										</th>
+										<th>
+											<%= __("Status") %>
+										</th>
+										<th>
+											<%= __("Date") %>
+										</th>
+										<th>
+											<%= __("Options") %>
+										</th>
+									</tr>
+								</thead>
+
+								<tbody>
+									<% if(order.length>0){%>
+										<% order.forEach( o=>{%>
+											<tr>
+												<td>
+													<%=o._id%>
+												</td>
+												<td>
+													<%=o.totalPrice%>
+												</td>
+												<td>
+													<%=o.shippingAddress1%>
+												</td>
+												<td>
+													<%=o.status%>
+												</td>
+												<td>
+													<%=o.dateOrdered.getDate() + '-' + (o.dateOrdered.getMonth()+1)
+														+'-'+ o.dateOrdered.getFullYear()%>
+												</td>
+												<td>
+													<a href="/api/v1/orders/<%=o._id%>" class="option-icon view-icon"><i
+															class="fas fa-eye"></i></a>
+													<a href="" id="delete" data-doc="<%=o._id%>"
+														class="option-icon delete-icon"><i
+															class="fas fa-trash-alt"></i></a>
+												</td>
+											</tr>
+											<!-- You can add more rows with similar structure for additional orders -->
+											<%})%>
+												<%}%>
+								</tbody>
+
+							</table>
+							<div class="form-group" style="display: grid; place-items: center; height: 50%;">
+								<a href="#" class="primary-btn order-submit">
+									<%= __("back") %>
+								</a>
+							</div>
+						</div>
+						<!-- /Order Details -->
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /SECTION -->
+			<script>
+				const deleteButtons = document.querySelectorAll('a#delete');
+
+
+				////////////////// Khoogn được chèn cú phép viewengine vào script (vì viewengine chỉ tác dụng trên HTMl)
+				deleteButtons.forEach((button) => {
+					button.addEventListener('click', (e) => {
+						const endpoint = `/api/v1/users/deleteOrder/${button.dataset.doc}`;
+						fetch(endpoint, {
+							method: 'DELETE'
+						})
+							.then(response => response.json())
+							.then((data) => {
+								window.location.href = data.redirect;
+							})
+							.catch(err => console.log(err));
+					})
+				})
+			</script>
+			<%- include('layouts/newLetter.ejs') %>
+
+				<%- include('layouts/footer.ejs') %>
+
+	</body>
+
+	</html>

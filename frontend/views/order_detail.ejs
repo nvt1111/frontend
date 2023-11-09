@@ -1,0 +1,225 @@
+<%- include('layouts/header.ejs') %>
+	<style>
+		.primary-btn.order-submit {
+			width: 420px;
+			padding: 10px;
+			font-size: 16px;
+		}
+
+		#product-image-td img {
+			max-width: 70px;
+			max-height: 100px;
+		}
+
+		.order-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		.order-table th,
+		.order-table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: center;
+		}
+
+		.order-table th {
+			background-color: #f2f2f2;
+		}
+
+		.option-icon {
+			margin: 0 5px;
+			color: #333;
+		}
+
+		.delete-icon {
+			color: #ff0000;
+		}
+
+		.details-icon {
+			color: #0088cc;
+		}
+	</style>
+	<!-- thư viện boot cho 2 icon -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+	<body>
+		<header>
+			<%- include('layouts/topHeader.ejs')%>
+				<%- include('layouts/mainHeader.ejs')%>
+		</header>
+		<%- include('layouts/navigation.ejs')%>
+			<div id="breadcrumb" class="section">
+				<div class="container">
+					<div class="row">
+						<div class="col-md-12">
+							<h3 class="breadcrumb-header">
+								<%= __("Profile") %>
+							</h3>
+							<ul class="breadcrumb-tree">
+								<li><a href="#">
+										<%= __("Home") %>
+									</a></li>
+								<li class="active">
+									<%= __("Profile") %>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /BREADCRUMB -->
+
+			<!-- SECTION -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-8 order-details">
+							<div class="section-title text-center">
+								<h3 class="title">
+									<%=user.name%>'s <%= __("Order") %>
+								</h3>
+							</div>
+							<table class="order-table">
+								<thead>
+									<tr>
+										<th>
+											<%= __("ProductImage") %>
+										</th>
+										<th>
+											<%= __("ProductName") %>
+										</th>
+										<th>
+											<%= __("Quantity") %>
+										</th>
+										<th>
+											<%= __("Price") %>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% if(orderItemHistory.length> 0){%>
+										<%orderItemHistory.forEach( o=>{%>
+											<!-- Vì mỗi orderItemsHistory có nhiều product 
+                                        Không dùng order.length nếu chỉ toofnt ại một order-->
+											<tr>
+												<td id="product-image-td"> <img src="<%=o.product.image%>" alt=""></td>
+												<!-- chèn ảnh dùng thẻ td kèm img -->
+												<td>
+													<%=o.product.name%>
+												</td>
+												<td>
+													<%=o.quantity%>
+												</td>
+												<td>
+													<%=o.price * o.quantity%>
+												</td>
+											</tr>
+											<%})%>
+												<%}%>
+													<!-- You can add more rows with similar structure for additional orders -->
+								</tbody>
+							</table>
+
+							<a href="/" class="primary-btn order-submit">
+								<%= __("back") %>
+							</a>
+						</div>
+						<!-- /Order Details -->
+						<div class="col-md-4">
+							<!-- Billing Details -->
+							<div class="section-title text-center">
+								<h3 class="title">
+									<%= __("Information") %>
+								</h3>
+							</div>
+
+							<div class="order-summary">
+								<div class="order-col">
+									<div><strong>
+											<%= __("PRODUCT") %>
+										</strong></div>
+									<div><strong>
+											<%= __("TOTAL") %>
+										</strong></div>
+								</div>
+								<% if(orderItemHistory.length> 0){%>
+									<%orderItemHistory.forEach( o=>{%>
+										<div class="order-products">
+											<div class="order-col">
+												<!-- IN CẢ 3 GIA TRỊ ĐÒNG THỜI -->
+												<div>
+													<%=o.quantity%>x <%=o.product.name%>
+												</div>
+												<div>
+													<%=o.price * o.quantity%> VND
+												</div>
+											</div>
+										</div>
+										<%})%>
+											<%}%>
+												<div class="order-summary">
+													<div class="order-col">
+														<div><strong>
+																<%= __("Shiping") %>
+															</strong>
+														</div>
+														<div><strong>FREE</strong></div>
+													</div>
+													<div class="order-col">
+														<div><strong>
+																<%= __("DATEORDER") %>:
+															</strong></div>
+														<div>
+															<%=order.dateOrdered.getDate() + '-' +
+																(order.dateOrdered.getMonth()+1) +'-'+
+																order.dateOrdered.getFullYear()%>
+														</div>
+
+													</div>
+													<div class="order-products">
+														<div class="order-col">
+															<!-- IN CẢ 3 GIA TRỊ ĐÒNG THỜI -->
+															<div><strong>
+																	<%= __("STATUS") %>:
+																</strong></div>
+															<div>
+																<%=order.status%>
+															</div>
+														</div>
+													</div>
+												</div>
+												<div class="order-col">
+													<div><strong>
+															<%= __("TOTAL") %>
+														</strong></div>
+													<div><strong class="order-total">
+															<%=order.totalPrice%> VND
+														</strong>
+													</div>
+												</div>
+							</div>
+
+						</div>
+
+						<!-- Order Details -->
+
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /SECTION -->
+
+			<%- include('layouts/newLetter.ejs') %>
+
+				<%- include('layouts/footer.ejs') %>
+
+	</body>
+
+	</html>

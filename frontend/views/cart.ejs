@@ -1,0 +1,248 @@
+<%- include('layouts/header.ejs') %>
+	<style>
+		#product-image-td img {
+			max-width: 70px;
+			max-height: 100px;
+		}
+
+		.delete-icon {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100px;
+		}
+
+		.delete-icon i {
+			font-size: 20px;
+			color: red;
+			cursor: pointer;
+		}
+	</style>
+	<!-- CSS bảng cart -->
+	<style>
+		#place {
+			width: 231px;
+			padding: 6px;
+			font-size: 14px;
+		}
+
+		.primary-btn.order-submit {
+			width: 100px;
+			padding: 10px;
+			font-size: 16px;
+		}
+
+		.order-table {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+		}
+
+		.order-table th,
+		.order-table td {
+			border: 1px solid #ddd;
+			padding: 8px;
+			text-align: center;
+		}
+
+		.order-table th {
+			background-color: #f2f2f2;
+		}
+
+		.option-icon {
+			margin: 0 5px;
+			color: #333;
+		}
+
+		.delete-icon {
+			color: #ff0000;
+		}
+
+		.details-icon {
+			color: #0088cc;
+		}
+	</style>
+	<!-- thư viện boot cho 2 icon -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+	<body>
+		<header>
+			<%- include('layouts/topHeader.ejs')%>
+				<%- include('layouts/mainHeader.ejs')%>
+		</header>
+		<%- include('layouts/navigation.ejs')%>
+			<!-- BREADCRUMB -->
+			<div id="breadcrumb" class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3 class="breadcrumb-header">
+								<%= __("Cart") %>
+							</h3>
+							<ul class="breadcrumb-tree">
+								<li><a href="#">
+										<%= __("Home") %>
+									</a></li>
+								<li class="active">
+									<%= __("Cart") %>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /BREADCRUMB -->
+
+			<!-- Link đến Bootstrap JS (nếu bạn sử dụng các tính năng JavaScript của Bootstrap) -->
+			<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+			<script>
+				const deleteButtons = document.querySelectorAll('a.delete'); // để tránh việc chỉ xoá đc dòng đầu thì ta chọn tất cả các dòng có thể xoá
+				deleteButtons.forEach((button) => {
+					button.addEventListener('click', (e) => {
+						e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a> là ko cho  thực hiện GET nhé 
+						const endpoint = `/api/v1/orderItems/delete/${button.dataset.doc}`;
+
+						fetch(endpoint, {
+							method: 'DELETE',
+						})
+							.then(response => response.json())
+							.then((data) => {
+								window.location.href = data.redirect;
+							})
+							.catch(err => console.log(err));
+					});
+				});
+
+			</script>
+
+
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<!-- Order Details -->
+						<div class="col-md-8 order-details">
+							<div class="section-title text-center">
+								<h3 class="title">
+									<%= __("Shoppingcart") %>
+								</h3>
+							</div>
+							<table class="order-table">
+
+								<thead>
+									<tr>
+										<th>
+											<%= __("ProductImage") %>
+										</th>
+										<th>
+											<%= __("ProductName") %>
+										</th>
+										<th>
+											<%= __("Quantity") %>
+										</th>
+										<th>
+											<%= __("Price") %>
+										</th>
+										<th>
+											<%= __("Action") %>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% if(orderItem.length>0) { %>
+										<% orderItem.forEach( item=>{%>
+											<tr>
+												<td id="product-image-td"><img src="<%=item.product.image%>"
+														alt="Product 1">
+												</td>
+												<td>
+													<%= item.product.name%>
+												</td>
+												<td>
+													<%= item.quantity%>
+												</td>
+												<td>
+													<%= item.price * item.quantity %>
+												</td>
+												<td class="delete-icon">
+													<!-- a chứa i -->
+													<a class="delete" data-doc="<%= item._id%>">
+														<i class="fa fa-trash" aria-hidden="true"></i>
+													</a>
+												</td>
+											</tr>
+
+											<%})%>
+												<%}%>
+
+								</tbody>
+
+							</table>
+						</div>
+						<!-- /Order Details -->
+
+						<div class="col-md-4 order-details">
+							<!-- Billing Details -->
+							<div class="user-info">
+								<h2>
+									<%= __("UserInformation") %>
+								</h2>
+								<p>
+									<%= __("Name") %>: <%= user.name%>
+								</p>
+								<p>
+									<%= __("Email") %>: <%= user.email%>
+								</p>
+							</div>
+							<!-- xử lí totalprice bên controller -->
+							<div class="total-price">
+								<%= __("TotalPrice") %>: <%=totalPrice%> VND
+							</div>
+							<br>
+							<form id="checkoutForm" action="/api/v1/orderItems/checkout" method="POST">
+								<input type="hidden" name="totalPrice" value="<%=totalPrice%>">
+								<input type="hidden" name="userName" value="<%=user.name%>">
+								<input type="hidden" name="check" value="0">
+								<input type="hidden" name="totalPricecheck" value="<%=totalPrice%>">
+								<!-- GỬI THÊM USER_ID ĐỂ THỰC HIỆN CHO TRANG PAYMENT GỌI LẠI ORDERHISTORY -->
+								<input type="hidden" name="user_id" value="<%=user._id%>">
+								<% orderItem.forEach(item=> { %>
+									<input type="hidden" name="productNames[]" value="<%= item.product.name %>">
+									<input type="hidden" name="quantities[]" value="<%= item.quantity %>">
+									<input type="hidden" name="prices[]" value="<%=item.price%>">
+									<% }) %>
+										<!-- GỬI MỘT MẢNG PRODUCT -->
+										<!-- KHOOGN ĐỂ VỪA POST vừa TYPE = SUBMIT conflict				 -->
+							</form>
+							<button class="btn btn-primary btn-block mt-3" id="place"
+								onclick="document.getElementById('checkoutForm').submit()" type="button">
+								<%= __("dathang") %>
+							</button>
+							<a href="/" class="btn btn-primary btn-block center-button"
+								style="width: 231px; align-items: center; ">
+								<%= __("continueShopping") %>
+							</a>
+
+							<!-- <button class="btn btn-primary btn-block mt-3">Đặt Hàng</button> -->
+						</div>
+
+
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+
+			<%- include('layouts/newLetter.ejs') %>
+
+				<%- include('layouts/footer.ejs') %>
+
+	</body>
+
+	</html>

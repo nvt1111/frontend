@@ -1,0 +1,239 @@
+<%- include('layouts/header.ejs') %>
+
+	<body>
+		<header>
+			<%- include('layouts/topHeader.ejs')%>
+				<%- include('layouts/mainHeader.ejs')%>
+		</header>
+		<%- include('layouts/navigation.ejs')%>
+			<!-- SECTION -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+
+						<!-- section title -->
+						<div class="col-md-12">
+							<div class="section-title">
+								<h3 class="title">
+									<%= __("NEWPRODUCTS") %>
+								</h3>
+								<div class="section-nav">
+									<ul class="section-tab-nav tab-nav">
+										<% if( categories.length> 0){%>
+											<% categories.forEach ( c=> {%>
+												<li><a data-toggle="tab" href="#tab1">
+														<%= __(`${c.name}`)%>
+													</a></li>
+												<%})%>
+													<%}%>
+									</ul>
+								</div>
+							</div>
+						</div>
+						<!-- /section title -->
+
+						<!-- Products tab & slick -->
+						<div class="col-md-12">
+							<div class="row">
+								<div class="products-tabs">
+									<!-- tab -->
+									<div id="tab1" class="tab-pane active">
+										<div class="products-slick" data-nav="#slick-nav-1">
+											<!-- product -->
+											<% if(products.length>0){%>
+												<% products.forEach( (pro)=>{%>
+													<div class="product">
+														<% if (isLoggedIn) { %>
+															<a
+																href="/api/v1/products/<%= pro._id %>?user_id=<%= user.id %>">
+
+																<div class="product-img">
+																	<img src="<%= pro.image %>" alt="">
+																	<div class="product-label">
+																		<span class="sale">-30%</span>
+																		<span class="new">NEW</span>
+																	</div>
+																</div>
+																<div class="product-body">
+																	<p class="product-category">
+																		<%= pro.category.name %>
+																	</p>
+																	<h3 class="product-name"><a href="#">
+																			<%= pro.name %>
+																		</a></h3>
+																	<h4 class="product-price">$<%= pro.price %> <del
+																				class="product-old-price">$990.00</del>
+																	</h4>
+																	<div class="product-rating">
+																		<% for (let i=0; i < pro.rating; i++) { %>
+																			<i class="fa fa-star"></i>
+																			<% } %>
+																	</div>
+																	<div class="product-btns">
+																		<button class="add-to-wishlist"><i
+																				class="fa fa-heart-o"></i><span
+																				class="tooltipp">add to
+																				wishlist</span></button>
+																		<button class="add-to-compare"><i
+																				class="fa fa-exchange"></i><span
+																				class="tooltipp">add to
+																				compare</span></button>
+																		<button class="quick-view"><i
+																				class="fa fa-eye"></i><span
+																				class="tooltipp">quick
+																				view</span></button>
+																	</div>
+																</div>
+															</a>
+															<%} else{%>
+																<!--SAO CHEP TẠM THOI XỬ LÍ ĐÃ LOGIN VÀ CHƯA LOGIN  -->
+																<div class="product-img">
+																	<img src="<%= pro.image %>" alt="">
+																	<div class="product-label">
+																		<span class="sale">-30%</span>
+																		<span class="new">NEW</span>
+																	</div>
+																</div>
+																<div class="product-body">
+																	<p class="product-category">
+																		<%= pro.category.name %>
+																	</p>
+																	<h3 class="product-name"><a href="#">
+																			<%= pro.name %>
+																		</a></h3>
+																	<h4 class="product-price">$<%= pro.price %> <del
+																				class="product-old-price">$990.00</del>
+																	</h4>
+																	<div class="product-rating">
+																		<% for (let i=0; i < pro.rating; i++) { %>
+																			<i class="fa fa-star"></i>
+																			<% } %>
+																	</div>
+																	<div class="product-btns">
+																		<button class="add-to-wishlist"><i
+																				class="fa fa-heart-o"></i><span
+																				class="tooltipp">add to
+																				wishlist</span></button>
+																		<button class="add-to-compare"><i
+																				class="fa fa-exchange"></i><span
+																				class="tooltipp">add to
+																				compare</span></button>
+																		<button class="quick-view"><i
+																				class="fa fa-eye"></i><span
+																				class="tooltipp">quick
+																				view</span></button>
+																	</div>
+																</div>
+																<!--SAO CHEP TẠM THOI XỬ LÍ ĐÃ LOGIN VÀ CHƯA LOGIN  -->
+																<%}%>
+																	<div class="add-to-cart">
+																		<% if (isLoggedIn) { %>
+																			<!-- ĐẢM BẢO Một FORM MỘt ID -->
+																			<form id="addToCartForm-<%= pro._id %>"
+																				action="/api/v1/orderItems/add-to-cart"
+																				method="POST" style="display: none;">
+																				<input type="hidden" name="user_id"
+																					value="<%= user.id %>">
+																				<input type="hidden" name="product_id"
+																					value="<%= pro._id %>">
+																				<!-- Truyền product_id của sản phẩm -->
+																				<input type="number" name="quantity"
+																					value="1" min="1" required>
+																				<!-- Chọn số lượng -->
+																				<input type="number" name="price"
+																					value="<%= pro.price %>" readonly>
+																				<!-- Giá của sản phẩm (readonly) -->
+																			</form>
+																			<%}%>
+																				<!-- MỖI MỘT ADD TO CART ĐC TRUYỀN THÊM THAM SỐ PRO_ID -->
+																				<button class="add-to-cart-btn"
+																					onclick="addToCart('<%= pro._id %>')"><i
+																						class="fa fa-shopping-cart"></i>
+																					add
+																					to
+																					cart</button>
+																	</div>
+													</div>
+
+													<%})%>
+														<%}%>
+
+										</div>
+										<div id="slick-nav-1" class="products-slick-nav"></div>
+									</div>
+									<!-- /tab -->
+								</div>
+							</div>
+						</div>
+						<!-- Products tab & slick -->
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /SECTION -->
+
+			<script>
+				function addToCart(id) {
+					// Gửi form ẩn tới API "/add-to-cart"
+					const form = document.getElementById(`addToCartForm-${id}`);// của tưng form nhé
+					form.submit();
+				}
+			</script>
+			<!-- HOT DEAL SECTION -->
+			<div id="hot-deal" class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12">
+							<div class="hot-deal">
+								<ul class="hot-deal-countdown">
+									<li>
+										<div>
+											<h3>02</h3>
+											<span>Days</span>
+										</div>
+									</li>
+									<li>
+										<div>
+											<h3>10</h3>
+											<span>Hours</span>
+										</div>
+									</li>
+									<li>
+										<div>
+											<h3>34</h3>
+											<span>Mins</span>
+										</div>
+									</li>
+									<li>
+										<div>
+											<h3>60</h3>
+											<span>Secs</span>
+										</div>
+									</li>
+								</ul>
+								<h2 class="text-uppercase">hot deal this week</h2>
+								<p>New Collection Up to 50% OFF</p>
+								<a class="primary-btn cta-btn" href="#">Shop now</a>
+							</div>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /HOT DEAL SECTION -->
+
+
+
+			<%- include('layouts/newLetter.ejs') %>
+
+				<%- include('layouts/footer.ejs') %>
+
+	</body>
+
+	</html>

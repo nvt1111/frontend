@@ -1,0 +1,143 @@
+<%- include('layouts/header.ejs') %>
+
+	<body>
+		<style>
+			.primary-btn.order-submit {
+				width: 420px;
+				padding: 10px;
+				font-size: 16px;
+				margin-left: 40px;
+				margin-right: 40px;
+			}
+		</style>
+		<header>
+			<%- include('layouts/topHeader.ejs')%>
+				<%- include('layouts/mainHeader.ejs')%>
+		</header>
+		<%- include('layouts/navigation.ejs')%>
+			<!-- BREADCRUMB -->
+			<div id="breadcrumb" class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-12">
+							<h3 class="breadcrumb-header">
+								<%= __("Payment") %>
+							</h3>
+							<ul class="breadcrumb-tree">
+								<li><a href="#">
+										<%= __("Home") %>
+									</a></li>
+								<li class="active">
+									<%= __("Payment") %>
+								</li>
+							</ul>
+						</div>
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /BREADCRUMB -->
+
+			<!-- SECTION -->
+			<div class="section">
+				<!-- container -->
+				<div class="container">
+					<!-- row -->
+					<div class="row">
+						<div class="col-md-3">
+						</div>
+
+						<div class="col-md-7 order-details">
+							<div class="section-title text-center">
+								<h3 class="title">
+									<%=user.name%>'s <%= __("Order") %>
+								</h3>
+							</div>
+
+							<div class="order-summary">
+								<div class="order-col">
+									<div><strong>
+											<%= __("PRODUCT") %>
+										</strong></div>
+									<div><strong>
+											<%= __("TOTAL") %>
+										</strong></div>
+								</div>
+								<% arrayOrderItemHistory.forEach((orderHistory)=> { %>
+									<div class="order-products">
+										<div class="order-col">
+											<div>
+												<%= orderHistory.quantity %>x <%= orderHistory.product.name %>
+											</div>
+											<div>
+												<%=(orderHistory.price ) * (orderHistory.quantity) %> VND
+											</div>
+										</div>
+									</div>
+
+									<div class="order-col">
+										<div>
+											<%= __("Shiping") %>
+										</div>
+										<div><strong>FREE</strong></div>
+									</div>
+									<div class="order-col">
+										<div>
+											<%= __("DateOrder") %>
+										</div>
+										<div>
+											<%=newOrder.dateOrdered.getDate() + '-' +
+												(newOrder.dateOrdered.getMonth()+1)
+												+'-'+newOrder.dateOrdered.getFullYear()%>
+										</div>
+									</div>
+									<%})%>
+										<div class="order-col">
+											<div><strong>
+													<%= __("TOTAL") %>
+												</strong></div>
+											<div><strong class="order-total">
+													<%= SavedOrder.totalPrice%> VND
+												</strong></div>
+										</div>
+							</div>
+
+
+							<form id="paymentForm" method="post" action="/api/v1/vnpays/create_payment_url">
+								<input type="hidden" name="orderId_id" value="<%= SavedOrder._id %>">
+								<input type="hidden" name="amount" value="<%= SavedOrder.totalPrice %>">
+								<input type="hidden" name="bankCode" value="NCB">
+								<input type="hidden" name="language" value="">
+								<button id="vnpay" type="button"
+									onclick="document.getElementById('paymentForm').submit()"
+									class="primary-btn order-submit">
+									<%= __("Payment with VNPay") %>
+								</button>
+							</form>
+						</div>
+						<!-- /Order Details -->
+					</div>
+					<!-- /row -->
+				</div>
+				<!-- /container -->
+			</div>
+			<!-- /SECTION -->
+
+			<%- include('layouts/newLetter.ejs') %>
+
+				<%- include('layouts/footer.ejs') %>
+
+					<!-- jQuery Plugins
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/slick.min.js"></script>
+	<script src="js/nouislider.min.js"></script>
+	<script src="js/jquery.zoom.min.js"></script>
+	<script src="js/main.js"></script> -->
+
+	</body>
+
+	</html>
